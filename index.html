@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Alien Bricks</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <meta name="theme-color" content="#02060c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <!-- Экран выбора уровня -->
+  <section id="screen-menu" class="screen active">
+    <header class="menu-head">
+      <h1>Alien Bricks</h1>
+      <div class="menu-stats">
+        <span id="menu-score">Очки: 0</span>
+        <span id="menu-stars"><img src="assets/sprites/levels/satellite_1.png" alt="★" class="sat-ico"> 0 / 225</span>
+        <button id="btn-sound" class="sprbtn small" type="button" title="Звук" style="--off:url(assets/sprites/ui/butsmall_sfx_off.png);--on:url(assets/sprites/ui/butsmall_sfx_on.png)"></button>
+      </div>
+    </header>
+    <nav id="planets" class="planets"></nav>
+    <div id="planet-title" class="planet-title"></div>
+    <div id="levels" class="levels"></div>
+    <div class="menu-boosters">
+      <span><img src="assets/sprites/ui/buticon_explosive.png" class="boost-ico" alt=""> Бомбы: <b id="menu-bombs">0</b></span>
+      <span><img src="assets/sprites/ui/buticon_slowmo.png" class="boost-ico" alt=""> Замедления: <b id="menu-slows">0</b></span>
+      <button id="btn-reset" class="link-btn" type="button">Сбросить прогресс</button>
+    </div>
+    <details class="help">
+      <summary>Как играть</summary>
+      <ul>
+        <li>Смахните блок пальцем или мышью — он полетит до препятствия. Если на пути ничего нет, блок вылетает с поля, влетает с противоположной стороны и, если и там пусто, улетает навсегда.</li>
+        <li>Цель — избавиться от всех пришельцев, бомб и пил. Оранжевые плиты с черепом неподвижны.</li>
+        <li><b>Бомба</b>, брошенная в препятствие, взрывает всё вокруг себя. <b>Пила</b> прорезает весь ряд насквозь и улетает.</li>
+        <li><b>Ловушка</b> останавливает любой пролетающий блок. <b>Стрелки</b> пропускают блоки только в указанных направлениях.</li>
+        <li>Если блок, влетев с другой стороны, упрётся в стену у самого края — авария, уровень проигран. Следите, чтобы новые блоки не заполнили поле целиком.</li>
+        <li>Бустеры: бомба взрывает область 3×3 в выбранной клетке, секундомер замедляет время на 20 секунд.</li>
+      </ul>
+    </details>
+    <div id="loading" class="loading">Загрузка…</div>
+  </section>
+
+  <!-- Игровой экран -->
+  <section id="screen-game" class="screen">
+    <!-- Верх: как в оригинале — шестиугольники с названием уровня и таймером -->
+    <div class="hud hud-top">
+      <div class="hexlabel"><span id="hud-level" class="hud-level">A-1</span></div>
+      <div id="hud-msg" class="hud-msg"></div>
+      <div class="hexlabel"><span id="hud-timer" class="hud-timer">00.00</span></div>
+    </div>
+    <div id="canvas-wrap">
+      <canvas id="game"></canvas>
+      <div id="tutorial-hint" class="tutorial-hint hidden"></div>
+      <div id="boss-counter" class="boss-counter hidden"></div>
+      <div id="countdown" class="countdown hidden"></div>
+    </div>
+    <!-- Низ: бустеры по краям (правый зеркально), пауза по центру -->
+    <div class="hud hud-bottom">
+      <button id="btn-bomb" class="booster" type="button" data-kind="bomb">
+        <span class="booster-bg"></span>
+        <span class="booster-ico"></span>
+        <span class="booster-badge"><span class="booster-ring"></span><span class="booster-cnt" id="cnt-bomb">0</span></span>
+      </button>
+      <button id="btn-pause" class="sprbtn pause" type="button" title="Пауза" style="--off:url(assets/sprites/ui/but_game_pause_off.png);--on:url(assets/sprites/ui/but_game_pause_on.png)"></button>
+      <button id="btn-slow" class="booster mirrored" type="button" data-kind="slow">
+        <span class="booster-bg"></span>
+        <span class="booster-ico"></span>
+        <span class="booster-badge"><span class="booster-ring"></span><span class="booster-cnt" id="cnt-slow">0</span></span>
+      </button>
+    </div>
+
+    <!-- Всплывающие окна -->
+    <div id="popup" class="popup hidden">
+      <div class="popup-box">
+        <h2 id="popup-title"></h2>
+        <div id="popup-body"></div>
+        <div id="popup-buttons" class="popup-buttons"></div>
+      </div>
+    </div>
+  </section>
+
+  <script src="levels.js"></script>
+  <script src="game.js"></script>
+  <script>
+    // Офлайн-режим и установка на домашний экран (PWA): работает только по https или localhost
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+  </script>
+</body>
+</html>
